@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KS3 Computing Quiz: Computing Past, Present and Future (Pages 30–41)</title>
+  <style>
+    :root {
+      --primary: #7c3aed;
+      --primary-hover: #6d28d9;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --correct-bg: #dcfce7;
+      --correct-border: #16a34a;
+      --correct-text: #14532d;
+      --wrong-bg: #fee2e2;
+      --wrong-border: #dc2626;
+      --wrong-text: #7f1d1d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .app-container {
+      background: var(--card);
+      width: 100%;
+      max-width: 720px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+      padding: 32px;
+      border: 1px solid var(--border);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .title-group h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .title-group p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .score-badge {
+      background: #f5f3ff;
+      color: var(--primary);
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .topic-tag {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: #334155;
+    }
+
+    .question-text {
+      font-size: 1.2rem;
+      font-weight: 600;
+      line-height: 1.5;
+      margin-bottom: 22px;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      padding: 15px 18px;
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 1rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--primary);
+      background: #f8fafc;
+    }
+
+    .option-btn:disabled {
+      cursor: default;
+    }
+
+    .option-letter {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .option-btn.correct {
+      background: var(--correct-bg);
+      border-color: var(--correct-border);
+      color: var(--correct-text);
+    }
+
+    .option-btn.correct .option-letter {
+      background: var(--correct-border);
+      color: #ffffff;
+    }
+
+    .option-btn.wrong {
+      background: var(--wrong-bg);
+      border-color: var(--wrong-border);
+      color: var(--wrong-text);
+    }
+
+    .option-btn.wrong .option-letter {
+      background: var(--wrong-border);
+      color: #ffffff;
+    }
+
+    .feedback-box {
+      padding: 14px 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      line-height: 1.45;
+      display: none;
+    }
+
+    .feedback-box.correct {
+      display: block;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+    }
+
+    .feedback-box.wrong {
+      display: block;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background 0.15s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-hover);
+    }
+
+    .btn-primary:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e1;
+    }
+
+    .results-container {
+      text-align: center;
+      display: none;
+    }
+
+    .results-container h2 {
+      font-size: 1.75rem;
+      margin-bottom: 8px;
+    }
+
+    .final-score {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 16px 0;
+    }
+
+    .review-list {
+      text-align: left;
+      margin-top: 28px;
+      max-height: 360px;
+      overflow-y: auto;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+
+    .review-item {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    .review-item strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .tag-pass {
+      color: #16a34a;
+      font-weight: 700;
+    }
+
+    .tag-fail {
+      color: #dc2626;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- Quiz View -->
+  <div id="quiz-view">
+    <div class="header">
+      <div class="title-group">
+        <h1>KS3 Computing: Past, Present & Future</h1>
+        <p>Chapter 3 Revision Quiz (Pages 30–41)</p>
+      </div>
+      <div class="score-badge" id="score-display">Score: 0 / 30</div>
+    </div>
+
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <div class="meta-row">
+      <span id="question-counter">Question 1 of 30</span>
+      <span class="topic-tag" id="topic-tag">Topic</span>
+    </div>
+
+    <div class="question-text" id="question-text">Loading question...</div>
+
+    <div class="options-list" id="options-list"></div>
+
+    <div class="feedback-box" id="feedback-box"></div>
+
+    <div class="controls">
+      <button class="btn btn-secondary" onclick="restartQuiz()">Restart</button>
+      <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" disabled>Next Question &rarr;</button>
+    </div>
+  </div>
+
+  <!-- Results View -->
+  <div class="results-container" id="results-view">
+    <h2>Quiz Complete!</h2>
+    <p style="color: var(--muted);">Progress in Computing KS3 — Pages 30–41</p>
+    <div class="final-score" id="final-score">0 / 30</div>
+    <p id="performance-msg" style="margin-bottom: 20px; font-weight: 500;"></p>
+    <button class="btn btn-primary" onclick="restartQuiz()">Try Again</button>
+
+    <div class="review-list" id="review-list"></div>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    {
+      topic: "3.1 History of word processing (Page 30)",
+      question: "What mechanical device, introduced from the mid-nineteenth century, printed text directly onto paper using only one font and one font size?",
+      options: [
+        "The Analytical Engine",
+        "The typewriter",
+        "The abacus",
+        "The slide rule"
+      ],
+      answer: 1,
+      explanation: "A typewriter is a mechanical text-printing machine with a single fixed font and font size[cite: 32]."
+    },
+    {
+      topic: "3.1 History of word processing (Page 30)",
+      question: "What was the name of the first commercial word-processing software, published in 1978?",
+      options: [
+        "Microsoft Word",
+        "Google Docs",
+        "WordStar",
+        "WordPerfect"
+      ],
+      answer: 2,
+      explanation: "WordStar was published in 1978 as the first commercial word-processing software[cite: 32]."
+    },
+    {
+      topic: "3.1 History of word processing (Page 30)",
+      question: "What is a 'mind map'?",
+      options: [
+        "A spreadsheet table containing VLOOKUP formulas",
+        "A diagram that organises information around a central concept or topic with linked pieces of information",
+        "A type of bitmap image saved at 300 dpi",
+        "A timeline of early mechanical calculators"
+      ],
+      answer: 1,
+      explanation: "A mind map organises ideas around a central concept, placing more important information closer to the centre[cite: 32]."
+    },
+    {
+      topic: "3.1 History of word processing (Page 31)",
+      question: "What is a 'template' in word processing?",
+      options: [
+        "A blank document with a pre-set format to make creating standard documents quicker",
+        "A tool that checks spelling and grammar automatically",
+        "A shortcut key that deletes all text",
+        "A type of computer hardware inside the motherboard"
+      ],
+      answer: 0,
+      explanation: "A template provides a pre-set layout/format so standard documents can be produced much faster[cite: 33]."
+    },
+    {
+      topic: "3.1 History of word processing (Page 31)",
+      question: "What is 'plagiarism' when researching on the internet?",
+      options: [
+        "Using quotation marks and citing the author's URL",
+        "Pretending you wrote words that were originally written by someone else",
+        "Checking whether a website has been updated recently",
+        "Grouping shapes together in a mind map"
+      ],
+      answer: 1,
+      explanation: "Plagiarism is copying someone else's work and presenting it as your own without quoting and citing the source[cite: 33]."
+    },
+    {
+      topic: "3.1 History of word processing (Page 31)",
+      question: "Which three steps should you follow when you think you have finished a piece of document work?",
+      options: [
+        "Copy, Paste, Print",
+        "Review, Reflect, Edit",
+        "Zoom, Crop, Scale",
+        "Input, Process, Output"
+      ],
+      answer: 1,
+      explanation: "Reviewing, reflecting, and editing ensures all objectives are met and spelling/grammar errors are corrected[cite: 33]."
+    },
+    {
+      topic: "3.2 Designing a leaflet (Page 32)",
+      question: "What does it mean that the user interface (UI) of modern word-processing software is 'intuitive'?",
+      options: [
+        "It requires you to write complex code to type a sentence",
+        "It is designed to be easy to use and understand",
+        "It can only be used by professional graphic designers",
+        "It automatically translates documents into Arabic"
+      ],
+      answer: 1,
+      explanation: "An intuitive user interface is easy to understand and navigate naturally[cite: 34]."
+    },
+    {
+      topic: "3.2 Designing a leaflet (Page 32)",
+      question: "Why is the design cycle described as 'iterative'?",
+      options: [
+        "Because it can only ever be done once",
+        "Because it repeats—designs are tested, evaluated, and improved until fit for purpose",
+        "Because it is only used for designing websites",
+        "Because it removes all images from a document"
+      ],
+      answer: 1,
+      explanation: "An iterative design cycle repeats testing and refinement until no further improvements are needed[cite: 34]."
+    },
+    {
+      topic: "3.2 Designing a leaflet (Page 33)",
+      question: "What page orientation and margin setting is recommended to fit two identical flyers side-by-side on one A4 sheet?",
+      options: [
+        "Portrait orientation with wide margins",
+        "Landscape orientation with narrow margins",
+        "Square orientation with no text",
+        "Portrait orientation with double line spacing"
+      ],
+      answer: 1,
+      explanation: "Setting the A4 page to landscape with narrow margins provides enough room for two side-by-side flyers[cite: 35]."
+    },
+    {
+      topic: "3.2 Designing a leaflet (Page 33)",
+      question: "Why should you limit the number of fonts, font sizes, and font colours on a flyer or report?",
+      options: [
+        "Because using too many can look messy and confusing to the reader",
+        "Because printers can only print one colour per page",
+        "Because Microsoft Word only has two fonts",
+        "To make the file size smaller than 1 KB"
+      ],
+      answer: 0,
+      explanation: "Limiting fonts, sizes, and colours keeps the visual hierarchy clean and avoids confusing the audience[cite: 35, 37]."
+    },
+    {
+      topic: "3.3 Moore's Law (Page 34)",
+      question: "What switches did 1940s computers like ENIAC use to process data?",
+      options: [
+        "Silicon microchips",
+        "Thumb-sized valves",
+        "Quantum electrons",
+        "Laser discs"
+      ],
+      answer: 1,
+      explanation: "Early 1940s computers such as ENIAC used nearly 18,000 thumb-sized valves[cite: 36]."
+    },
+    {
+      topic: "3.3 Moore's Law (Page 34)",
+      question: "Which invention in 1947 replaced bulky valves and caused the first big reduction in computer size?",
+      options: [
+        "The transistor",
+        "The World Wide Web",
+        "The smartphone",
+        "The typewriter"
+      ],
+      answer: 0,
+      explanation: "Invented in 1947, much smaller transistors replaced valves[cite: 36]."
+    },
+    {
+      topic: "3.3 Moore's Law (Page 34)",
+      question: "What was invented in 1959 that allowed many tiny transistors to be etched onto a single piece of silicon?",
+      options: [
+        "The abacus",
+        "The microchip",
+        "The slide rule",
+        "The astrolabe"
+      ],
+      answer: 1,
+      explanation: "The microchip (invented in 1959) allowed increasing numbers of transistors to be etched onto silicon[cite: 36]."
+    },
+    {
+      topic: "3.3 Moore's Law (Page 34)",
+      question: "Who is Moore's Law named after, and which major chip company did he co-found in 1965?",
+      options: [
+        "Alan Turing — IBM",
+        "Gordon Moore — Intel Corporation",
+        "Tim Berners-Lee — Apple",
+        "Charles Babbage — Microsoft"
+      ],
+      answer: 1,
+      explanation: "Gordon Moore co-founded Intel Corporation with Robert Noyce in 1965[cite: 36]."
+    },
+    {
+      topic: "3.3 Moore's Law (Page 34)",
+      question: "What does Moore's Law state?",
+      options: [
+        "The price of computers doubles every two years",
+        "The number of transistors that can be etched onto a single microchip doubles about every two years",
+        "Every home will only ever need five computers",
+        "Internet speeds double every ten years"
+      ],
+      answer: 1,
+      explanation: "Moore observed and predicted that the number of transistors on a microchip doubles roughly every two years[cite: 36]."
+    },
+    {
+      topic: "3.4 History of computing (Page 36 & 38)",
+      question: "Which ninth-century Persian mathematician is known as the 'father of algebra' and inspired the word 'algorithm'?",
+      options: [
+        "al-Khwarizmi",
+        "John von Neumann",
+        "Gordon Moore",
+        "Charles Babbage"
+      ],
+      answer: 0,
+      explanation: "al-Khwarizmi (780–850 CE) was a Persian mathematician whose name gave rise to the word 'algorithm'[cite: 38, 40]."
+    },
+    {
+      topic: "3.4 History of computing (Page 36 & 38)",
+      question: "What did Alan Turing imagine in his famous 1936 mathematics paper?",
+      options: [
+        "A single universal machine capable of computing any problem",
+        "A touchscreen smartphone with mobile apps",
+        "A mechanical steam-powered printing press",
+        "A wireless drone delivery network"
+      ],
+      answer: 0,
+      explanation: "Turing's 1936 paper envisioned a universal computing machine, forming the theoretical basis of modern computers[cite: 38, 40]."
+    },
+    {
+      topic: "3.4 History of computing (Page 37)",
+      question: "Which of the following is a quality of a well-designed presentation slide?",
+      options: [
+        "Crowding as much text as possible onto every slide",
+        "Strong contrast between background colour and font colour, with a good balance of text and images",
+        "Using five different fonts and animations on every word",
+        "Linking out to external video players instead of embedding clips"
+      ],
+      answer: 1,
+      explanation: "High contrast, consistent design, balanced text/images, and embedded media make presentations effective[cite: 39]."
+    },
+    {
+      topic: "3.4 History of computing (Page 38)",
+      question: "What calculating devices were used up to the 6th century before the Arabic number system was adopted?",
+      options: [
+        "Abacuses (counting frames)",
+        "Electronic calculators with memory",
+        "Microprocessors",
+        "Touchscreen tablets"
+      ],
+      answer: 0,
+      explanation: "Abacuses were early counting frames used for mathematical calculations up to the 6th century[cite: 40]."
+    },
+    {
+      topic: "3.4 History of computing (Page 38)",
+      question: "What were 'astrolabes' used for up to the 18th century?",
+      options: [
+        "Breaking Enigma codes during World War II",
+        "Analogue calculators used by sailors to help navigate before the invention of the sextant",
+        "Word processing commercial documents",
+        "Storing data on quantum electrons"
+      ],
+      answer: 1,
+      explanation: "Astrolabes were analogue calculating instruments used for maritime navigation[cite: 40]."
+    },
+    {
+      topic: "3.4 History of computing (Page 38)",
+      question: "Who designed the mechanical 'Analytical Engine' in the 1820s, and who published the first computer program for it?",
+      options: [
+        "Charles Babbage and Ada Lovelace",
+        "Gordon Moore and Robert Noyce",
+        "Thomas Watson and Ken Olsen",
+        "Tim Berners-Lee and John von Neumann"
+      ],
+      answer: 0,
+      explanation: "Charles Babbage designed the Analytical Engine, and Ada Lovelace wrote and published the first computer program[cite: 40]."
+    },
+    {
+      topic: "3.4 History of computing (Page 38)",
+      question: "What was 'Colossus' (1943–1944)?",
+      options: [
+        "The first smartphone with a touchscreen",
+        "The first programmable electronic digital computer, built at Bletchley Park to break the Enigma code",
+        "IBM's first personal computer",
+        "The world's first electronic pocket calculator"
+      ],
+      answer: 1,
+      explanation: "Colossus was built at Bletchley Park in the UK during WWII to help break German Enigma codes[cite: 40]."
+    },
+    {
+      topic: "3.4 History of computing (Page 38)",
+      question: "Who invented EDVAC in 1949, the first stored-program computer whose architecture is still used today?",
+      options: [
+        "John von Neumann",
+        "Alan Turing",
+        "al-Khwarizmi",
+        "Ken Olsen"
+      ],
+      answer: 0,
+      explanation: "John von Neumann created EDVAC, establishing the stored-program 'von Neumann architecture'[cite: 40]."
+    },
+    {
+      topic: "3.4 History of computing (Page 38)",
+      question: "Who invented the World Wide Web in 1990 by specifying HTML and writing browser and server software?",
+      options: [
+        "Tim Berners-Lee",
+        "Gordon Moore",
+        "Charles Babbage",
+        "Thomas Watson"
+      ],
+      answer: 0,
+      explanation: "Tim Berners-Lee invented the World Wide Web in 1990[cite: 40]."
+    },
+    {
+      topic: "3.4 History of computing (Page 36 & 38)",
+      question: "How does 'quantum computing' differ from traditional computers?",
+      options: [
+        "It uses steam engines to turn gears",
+        "It uses the spin property of electrons so a single atom can store many pieces of data for massive parallel processing",
+        "It relies on vacuum valves the size of a thumb",
+        "It only works without electricity"
+      ],
+      answer: 1,
+      explanation: "Quantum computers use electron spin to process and store multiple states simultaneously[cite: 38, 40]."
+    },
+    {
+      topic: "3.5 Learning to present (Page 39)",
+      question: "Which of the following is something you SHOULD DO when delivering a presentation?",
+      options: [
+        "Stand directly in front of the projector screen",
+        "Read every single word off the slides with your back to the audience",
+        "Look at the audience, speak loudly and clearly, and keep to your time limit",
+        "Rush through all slides as fast as possible"
+      ],
+      answer: 2,
+      explanation: "Making eye contact, speaking clearly, pacing yourself, and staying within time are key presentation skills[cite: 41]."
+    },
+    {
+      topic: "3.5 Learning to present (Page 39)",
+      question: "Which of the following is a 'DON'T' when giving a presentation?",
+      options: [
+        "Talk about the information on the slides",
+        "Give the audience time to absorb each slide",
+        "Turn your back to the audience or read text directly off the slides",
+        "Rehearse your presentation beforehand"
+      ],
+      answer: 2,
+      explanation: "Turning your back, mumbling, standing in front of the screen, or reading verbatim from slides should be avoided[cite: 41]."
+    },
+    {
+      topic: "3.6 The future of computing (Page 40)",
+      question: "Which emerging future technologies are explored in Lesson 3.6?",
+      options: [
+        "Typewriters, slide rules, and abacuses",
+        "Delivery drones, brain-computer implants, cashierless shops, and smart fridges",
+        "Valve computers and floppy disks",
+        "Steam-powered mechanical calculators"
+      ],
+      answer: 1,
+      explanation: "Page 40 highlights companion robots, delivery drones, brain chips, automated checkout shops, and smart fridges[cite: 42]."
+    },
+    {
+      topic: "3.6 The future of computing (Page 41)",
+      question: "What famously inaccurate prediction did IBM President Thomas Watson make in 1943?",
+      options: [
+        "'Everyone will carry a computer in their pocket.'",
+        "'I think there is a world market for maybe five computers.'",
+        "'Computers will never use electricity.'",
+        "'The internet will replace all schools by 1950.'"
+      ],
+      answer: 1,
+      explanation: "In 1943, Thomas Watson predicted a global market for only about five computers[cite: 43]."
+    },
+    {
+      topic: "3.6 The future of computing (Page 41)",
+      question: "Who famously stated in 1977: 'There is no reason anyone would want a computer in their home'?",
+      options: [
+        "Ken Olsen (founder of Digital Equipment Corporation)",
+        "Tim Berners-Lee (inventor of the Web)",
+        "Gordon Moore (co-founder of Intel)",
+        "Ada Lovelace (first computer programmer)"
+      ],
+      answer: 0,
+      explanation: "Ken Olsen made this famously wrong prediction in 1977, right before the home PC boom[cite: 43]."
+    }
+  ];
+
+  let currentIndex = 0;
+  let score = 0;
+  let userAnswers = [];
+
+  const questionCounterEl = document.getElementById("question-counter");
+  const topicTagEl = document.getElementById("topic-tag");
+  const questionTextEl = document.getElementById("question-text");
+  const optionsListEl = document.getElementById("options-list");
+  const feedbackBoxEl = document.getElementById("feedback-box");
+  const nextBtnEl = document.getElementById("next-btn");
+  const scoreDisplayEl = document.getElementById("score-display");
+  const progressBarEl = document.getElementById("progress-bar");
+  const quizViewEl = document.getElementById("quiz-view");
+  const resultsViewEl = document.getElementById("results-view");
+
+  function loadQuestion() {
+    const q = questions[currentIndex];
+    questionCounterEl.textContent = `Question ${currentIndex + 1} of ${questions.length}`;
+    topicTagEl.textContent = q.topic;
+    questionTextEl.textContent = q.question;
+    progressBarEl.style.width = `${(currentIndex / questions.length) * 100}%`;
+
+    feedbackBoxEl.className = "feedback-box";
+    feedbackBoxEl.textContent = "";
+    nextBtnEl.disabled = true;
+    nextBtnEl.textContent = currentIndex === questions.length - 1 ? "Finish Quiz" : "Next Question →";
+
+    optionsListEl.innerHTML = "";
+    const letters = ["A", "B", "C", "D"];
+
+    q.options.forEach((optionText, idx) => {
+      const btn = document.createElement("button");
+      btn.className = "option-btn";
+      btn.innerHTML = `<span class="option-letter">${letters[idx]}</span><span>${optionText}</span>`;
+      btn.onclick = () => selectOption(idx);
+      optionsListEl.appendChild(btn);
+    });
+  }
+
+  function selectOption(selectedIdx) {
+    const q = questions[currentIndex];
+    const buttons = optionsListEl.querySelectorAll(".option-btn");
+    const isCorrect = selectedIdx === q.answer;
+
+    buttons.forEach((btn, idx) => {
+      btn.disabled = true;
+      if (idx === q.answer) {
+        btn.classList.add("correct");
+      } else if (idx === selectedIdx && !isCorrect) {
+        btn.classList.add("wrong");
+      }
+    });
+
+    if (isCorrect) {
+      score++;
+      scoreDisplayEl.textContent = `Score: ${score} / ${questions.length}`;
+      feedbackBoxEl.className = "feedback-box correct";
+      feedbackBoxEl.innerHTML = `<strong>Correct!</strong> ${q.explanation}`;
+    } else {
+      feedbackBoxEl.className = "feedback-box wrong";
+      feedbackBoxEl.innerHTML = `<strong>Incorrect.</strong> ${q.explanation}`;
+    }
+
+    userAnswers.push({
+      question: q.question,
+      selected: q.options[selectedIdx],
+      correct: q.options[q.answer],
+      isCorrect: isCorrect
+    });
+
+    nextBtnEl.disabled = false;
+  }
+
+  function nextQuestion() {
+    currentIndex++;
+    if (currentIndex < questions.length) {
+      loadQuestion();
+    } else {
+      showResults();
+    }
+  }
+
+  function showResults() {
+    progressBarEl.style.width = "100%";
+    quizViewEl.style.display = "none";
+    resultsViewEl.style.display = "block";
+
+    document.getElementById("final-score").textContent = `${score} / ${questions.length}`;
+
+    const percentage = Math.round((score / questions.length) * 100);
+    let msg = "";
+    if (percentage >= 85) {
+      msg = `Outstanding (${percentage}%)! You've mastered Computing: Past, Present and Future.`;
+    } else if (percentage >= 60) {
+      msg = `Good effort (${percentage}%)! Review the missed questions below to hit 100%.`;
+    } else {
+      msg = `You scored ${percentage}%. Review pages 30–41 and try again!`;
+    }
+    document.getElementById("performance-msg").textContent = msg;
+
+    const reviewListEl = document.getElementById("review-list");
+    reviewListEl.innerHTML = "<h3 style='margin-bottom:12px;'>Question Review</h3>";
+
+    userAnswers.forEach((item, index) => {
+      const div = document.createElement("div");
+      div.className = "review-item";
+      div.innerHTML = `
+        <strong>Q${index + 1}: ${item.question}</strong>
+        <span class="${item.isCorrect ? "tag-pass" : "tag-fail"}">
+          ${item.isCorrect ? "✓ Correct" : "✗ Your answer: " + item.selected}
+        </span>
+        ${!item.isCorrect ? `<br><span style="color:#334155;">Correct answer: <b>${item.correct}</b></span>` : ""}
+      `;
+      reviewListEl.appendChild(div);
+    });
+  }
+
+  function restartQuiz() {
+    currentIndex = 0;
+    score = 0;
+    userAnswers = [];
+    scoreDisplayEl.textContent = `Score: 0 / ${questions.length}`;
+    resultsViewEl.style.display = "none";
+    quizViewEl.style.display = "block";
+    loadQuestion();
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
